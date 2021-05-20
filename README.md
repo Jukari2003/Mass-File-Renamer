@@ -4,10 +4,10 @@ Quickly Rename Thousands of Files
 Mass File Renamer is a GUI based PowerShell Script.
 
 - It will allow you to quickly:
-  - Recurively make changes
+  - Recursively make changes
   - Rename folders
   - Rename files
-  - Rename extentions
+  - Rename extensions
   - Format titles automatically e.g. (Format Titles Automatically) 
   - Replace any character(s) for another set of character(s)
   - Append character(s) to the beginning of a file/folder name
@@ -16,8 +16,8 @@ Mass File Renamer is a GUI based PowerShell Script.
   - Append character(s) before a specific character(s)
   - Replace character(s) at the start of a file/folder
   - Replace character(s) at the end of a file/folder
-  - Delete characters(s) after a certian character(s)
-  - Delete character(s) before a certian character(s)
+  - Delete characters(s) after a certain character(s)
+  - Delete character(s) before a certain character(s)
 
 - Easy & Safe to use:
   - You will get a preview of what changes will look like before you accept.
