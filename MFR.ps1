@@ -780,7 +780,7 @@ Function Idle_Timer
     ##################################################################################
     ###########Build Hash to Determine if Any changes
     $new_hash = [string]$script:target_directory + [string]$script:drill_down_folders + [string]$script:include_file_names + [string]$script:include_folder_names + [string]$script:include_extensions + [string]$script:format_titles_automatically + [string]$script:case_sensitive + [string]$script:must_contain + [string]$script:action + [string]$script:word1 + [string]$script:word2
-    if(($new_hash -cne $script:hash) -or (($preview_box.text -eq "") -and ($script:preview_job.state -ne "Running")))
+    if(($new_hash -cne $script:hash) -or (($preview_box.text -eq "") -and ($script:preview_job.state -ne "Running")) -and ($script:target_directory -ne "Browse or Enter a file path") -and ($script:target_directory -ne ""))
     {
         $script:hash = $new_hash
         $preview_box.text = "Loading..."
@@ -815,11 +815,17 @@ Function Idle_Timer
         }
         $script:preview_job = "";
     }
-    elseif($script:preview_job.state -eq "Running")
+    elseif($script:preview_job.state -eq "Running" -and ($script:target_directory -ne "Browse or Enter a file path") -and ($script:target_directory -ne ""))
     {
         $duration = (Get-Date) - $script:start_time
         [int]$seconds = $duration.TotalSeconds
         $preview_box.text = "Loading..." + "(" + $seconds + ")"
+    }
+    if($script:target_directory -eq "Browse or Enter a file path" -or $script:target_directory -eq "")
+    {
+        $preview_box.text = "Please Select a Directory"
+        $show_list_button.enabled = $false
+            $perform_renames_button.enabled = $false
     }
 
     ##################################################################################
@@ -889,7 +895,7 @@ function processing
         }
         elseif(!(Test-Path -literalpath "$target_directory") -or ("$target_directory" -eq "") -or ($target_directory -eq $null))
         {
-            $return_block = $return_block + "Error: Invalid Directory`r`n"
+            $return_block = $return_block + "Path Error: Invalid Directory`r`n"
             $go = 0;
         }    
         if($go -eq 1)
@@ -898,17 +904,17 @@ function processing
             {
                 if($word1 -eq "")
                 {
-                    $return_block = $return_block + "Error: Missing Replace Characters Parameter 1`r`n"
+                    $return_block = $return_block + "Action Error: Missing Replace Characters Parameter 1`r`n"
                     $go = 0;
                 }
-                if($word1 -match '[~"#%&*:<>?/\\{|}]+')
+                if($word1 -match '["*:<>?/\\{|}]+')
                 {
-                    $return_block = $return_block + "Error: Invalid Characters`r`n"
+                    $return_block = $return_block + "Action Error: Invalid Characters`r`n"
                     $go = 0;
                 }
-                if($word2 -match '[~"#%&*:<>?/\\{|}]+')
+                if($word2 -match '["*:<>?/\\{|}]+')
                 {
-                    $return_block = $return_block + "Error: Invalid Characters`r`n"
+                    $return_block = $return_block + "Action Error: Invalid Characters`r`n"
                     $go = 0;
                 }
             }
@@ -916,12 +922,12 @@ function processing
             {
                 if($word2 -eq "")
                 {
-                    $return_block = $return_block + "Error: Missing Append Beginning Parameter`r`n"
+                    $return_block = $return_block + "Action Error: Missing Append Beginning Parameter`r`n"
                     $go = 0;
                 }
-                if($word2 -match '[~"#%&*:<>?/\\{|}]+')
+                if($word2 -match '["*:<>?/\\{|}]+')
                 {
-                    $return_block = $return_block + "Error: Invalid Characters`r`n"
+                    $return_block = $return_block + "Action Error: Invalid Characters`r`n"
                     $go = 0;
                 }
             }
@@ -929,12 +935,12 @@ function processing
             {
                 if($word2 -eq "")
                 {
-                    $return_block = $return_block + "Error: Missing Append End Parameter`r`n"
+                    $return_block = $return_block + "Action Error: Missing Append End Parameter`r`n"
                     $go = 0;
                 }
-                if($word2 -match '[~"#%&*:<>?/\\{|}]+')
+                if($word2 -match '["*:<>?/\\{|}]+')
                 {
-                    $return_block = $return_block + "Error: Invalid Characters`r`n"
+                    $return_block = $return_block + "Action Error: Invalid Characters`r`n"
                     $go = 0;
                 }
             }
@@ -942,22 +948,22 @@ function processing
             {
                 if($word1 -eq "")
                 {
-                    $return_block = $return_block + "Error: Missing Append After Parameter 1`r`n"
+                    $return_block = $return_block + "Action Error: Missing Append After Parameter 1`r`n"
                     $go = 0;
                 }
-                if($word1 -match '[~"#%&*:<>?/\\{|}]+')
+                if($word1 -match '["*:<>?/\\{|}]+')
                 {
-                    $return_block = $return_block + "Error: Invalid Characters`r`n"
+                    $return_block = $return_block + "Action Error: Invalid Characters`r`n"
                     $go = 0;
                 }
                 if($word2 -eq "")
                 {
-                    $return_block = $return_block + "Error: Missing Append After Parameter 2`r`n"
+                    $return_block = $return_block + "Action Error: Missing Append After Parameter 2`r`n"
                     $go = 0;
                 }
-                if($word2 -match '[~"#%&*:<>?/\\{|}]+')
+                if($word2 -match '["*:<>?/\\{|}]+')
                 {
-                    $return_block = $return_block + "Error: Invalid Characters`r`n"
+                    $return_block = $return_block + "Action Error: Invalid Characters`r`n"
                     $go = 0;
                 }
             }
@@ -965,22 +971,22 @@ function processing
             {
                 if($word1 -eq "")
                 {
-                    $return_block = $return_block + "Error: Missing Append Before Parameter 1`r`n"
+                    $return_block = $return_block + "Action Error: Missing Append Before Parameter 1`r`n"
                     $go = 0;
                 }
-                if($word1 -match '[~"#%&*:<>?/\\{|}]+')
+                if($word1 -match '["*:<>?/\\{|}]+')
                 {
-                    $return_block = $return_block + "Error: Invalid Characters`r`n"
+                    $return_block = $return_block + "Action Error: Invalid Characters`r`n"
                     $go = 0;
                 }
                 if($word2 -eq "")
                 {
-                    $return_block = $return_block + "Error: Missing Append Before Parameter 2`r`n"
+                    $return_block = $return_block + "Action Error: Missing Append Before Parameter 2`r`n"
                     $go = 0;
                 }
-                if($word2 -match '[~"#%&*:<>?/\\{|}]+')
+                if($word2 -match '["*:<>?/\\{|}]+')
                 {
-                    $return_block = $return_block + "Error: Invalid Characters`r`n"
+                    $return_block = $return_block + "Action Error: Invalid Characters`r`n"
                     $go = 0;
                 }
             }
@@ -988,12 +994,12 @@ function processing
             {
                 if($word1 -eq "")
                 {
-                    $return_block = $return_block + "Error: Missing Beginning Characters Parameter 1`r`n"
+                    $return_block = $return_block + "Action Error: Missing Beginning Characters Parameter 1`r`n"
                     $go = 0;
                 }
-                if($word1 -match '[~"#%&*:<>?/\\{|}]+')
+                if($word1 -match '["*:<>?/\\{|}]+')
                 {
-                    $return_block = $return_block + "Error: Invalid Characters`r`n"
+                    $return_block = $return_block + "Action Error: Invalid Characters`r`n"
                     $go = 0;
                 }
             }
@@ -1001,12 +1007,12 @@ function processing
             {
                 if($word1 -eq "")
                 {
-                    $return_block = $return_block + "Error: Missing End Characters Parameter 1`r`n"
+                    $return_block = $return_block + "Action Error: Missing End Characters Parameter 1`r`n"
                     $go = 0;
                 }
-                if($word1 -match '[~"#%&*:<>?/\\{|}]+')
+                if($word1 -match '["*:<>?/\\{|}]+')
                 {
-                    $return_block = $return_block + "Error: Invalid Characters`r`n"
+                    $return_block = $return_block + "Action Error: Invalid Characters`r`n"
                     $go = 0;
                 }
             }
@@ -1014,12 +1020,12 @@ function processing
             {
                 if($word1 -eq "")
                 {
-                    $return_block = $return_block + "Error: Missing Delete Everything After Parameter`r`n"
+                    $return_block = $return_block + "Action Error: Missing Delete Everything After Parameter`r`n"
                     $go = 0;
                 }
-                if($word1 -match '[~"#%&*:<>?/\\{|}]+')
+                if($word1 -match '["*:<>?/\\{|}]+')
                 {
-                    $return_block = $return_block + "Error: Invalid Characters`r`n"
+                    $return_block = $return_block + "Action Error: Invalid Characters`r`n"
                     $go = 0;
                 }
             }
@@ -1027,12 +1033,12 @@ function processing
             {
                 if($word1 -eq "")
                 {
-                    $return_block = $return_block + "Error: Missing Delete Everything Before Parameter`r`n"
+                    $return_block = $return_block + "Action Error: Missing Delete Everything Before Parameter`r`n"
                     $go = 0;
                 }
-                if($word1 -match '[~"#%&*:<>?/\\{|}]+')
+                if($word1 -match '["*:<>?/\\{|}]+')
                 {
-                    $return_block = $return_block + "Error: Invalid Characters`r`n"
+                    $return_block = $return_block + "Action Error: Invalid Characters`r`n"
                     $go = 0;
                 }
             }
