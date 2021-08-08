@@ -527,7 +527,8 @@ function main
     $action_combo.Items.Add("Replace Beginning Characters:") | Out-Null
     $action_combo.Items.Add("Replace End Characters:") | Out-Null 
     $action_combo.Items.Add("Delete Everything After:") | Out-Null
-    $action_combo.Items.Add("Delete Everything Before:") | Out-Null   
+    $action_combo.Items.Add("Delete Everything Before:") | Out-Null
+    $action_combo.Items.Add("Insert at Position:") | Out-Null
     $action_combo.Add_SelectedValueChanged({
         if($this.SelectedItem -eq "Replace Characters:")
         {
@@ -535,6 +536,13 @@ function main
             $word2_textbox.Visible = $true
             $word2_label.Visible = $true
             $script:action = "Replace Characters:"
+        }
+        elseif($this.SelectedItem -eq "Insert at Position:")
+        {
+            $word1_textbox.Visible = $true
+            $word2_textbox.Visible = $true
+            $word2_label.Visible = $true
+            $script:action = "Insert at Position:"
         }
         elseif($this.SelectedItem -eq "Append Beginning:")
         {
@@ -918,6 +926,19 @@ function processing
                     $go = 0;
                 }
             }
+            elseif($action -eq "Insert at Position:")
+            {
+                if(!($word1 -match "^\d+$"))
+                {
+                    $return_block = $return_block + "Action Error: Parameter 1 must contain a number`r`n"
+                    $go = 0;
+                }
+                if($word2 -match '["*:<>?/\\{|}]+')
+                {
+                    $return_block = $return_block + "Action Error: Invalid Characters`r`n"
+                    $go = 0;
+                }
+            }
             elseif($action -eq "Append Beginning:")
             {
                 if($word2 -eq "")
@@ -1139,6 +1160,16 @@ function processing
                         {
                             $new_folder = $new_folder -replace "$([regex]::Escape($word1))","$word2"
                         }
+                    }
+                    ##################################################################################
+                    ###########Insert at Position: (Folders)
+                    if($action -eq "Insert at Position:")
+                    {
+                        if($word1 -gt $new_folder.length)
+                        {
+                            $word1 = $new_folder.length
+                        }
+                        $new_folder = $new_folder.insert($word1,$word2)
                     }
                     ##################################################################################
                     ###########Append Beginning: (Folders)
@@ -1417,6 +1448,16 @@ function processing
                         {
                             $new_file_name = $new_file_name -replace "$([regex]::Escape($word1))","$word2"
                         }
+                    }
+                    ##################################################################################
+                    ###########Insert at Position: (Folders)
+                    if($action -eq "Insert at Position:")
+                    {
+                        if($word1 -gt $new_file_name.length)
+                        {
+                            $word1 = $new_file_name.length
+                        }
+                        $new_file_name = $new_file_name.insert($word1,$word2)
                     }
                     ##################################################################################
                     ###########Append Beginning: (Files)
