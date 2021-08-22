@@ -1300,6 +1300,11 @@ function processing
                     $old_name = $old_name -replace '\\\\','\'
                     $new_name = $new_name -replace '\\\\','\'
 
+
+                    ##Fix Network Paths
+                    if($old_name -match "^\\"){$old_name = "\$old_name"}
+                    if($new_name -match "^\\"){$new_name = "\$new_name"}
+
                     if($old_name -cne $new_name)
                     {
                         $number_of_changes_found++
@@ -1442,7 +1447,7 @@ function processing
                     {
                         if($case_sensitive -eq 1)
                         {
-                            $new_file_name = $new_file_name -creplace "$([regex]::Escape($word1))","$word2"
+                            $new_file_name = $new_file_name -creplace "$([regex]::Escape("$word1"))","$word2"
                         }
                         else
                         {
@@ -1589,6 +1594,12 @@ function processing
 
                     $old_name = $old_name -replace '\\\\','\'
                     $new_name = $new_name -replace '\\\\','\'
+
+                    ##Fix Network Paths
+                    if($old_name -match "^\\"){$old_name = "\$old_name"}
+                    if($new_name -match "^\\"){$new_name = "\$new_name"}
+
+
 
                     if($old_name -cne $new_name)
                     {
@@ -2014,3 +2025,7 @@ $Script:Timer.Add_Tick({Idle_Timer})
 $Script:Timer.Start()
 #undo_renames
 main | Out-Null
+
+##Bug Fixed 22 Aug 2021
+##Fixed Network Paths
+## 
