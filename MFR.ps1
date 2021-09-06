@@ -146,7 +146,7 @@ function main
         [string]$script:target_directory = $this.text
         if(($script:target_directory -ne $null) -and ($script:target_directory -ne ""))
         {
-            if(Test-Path $target_box.text)
+            if(Test-Path -literalpath $target_box.text)
             {
                 $Form.Controls.Add($scan_target_button)
                 
@@ -176,7 +176,7 @@ function main
     $browse_button.Add_Click(
     {    
 		    $script:target_directory = prompt_for_folder
-            if(($script:target_directory -ne $Null) -and ($script:target_directory -ne "") -and ((Test-Path $script:target_directory) -eq $True))
+            if(($script:target_directory -ne $Null) -and ($script:target_directory -ne "") -and ((Test-Path -literalpath $script:target_directory) -eq $True))
             {
                 $target_box.Text="$script:target_directory"
                 
@@ -765,7 +765,7 @@ function main
                 $latest_undo_file_date = $name.CreationTime
             }
         } 
-        if(Test-path $latest_undo_file)
+        if(Test-Path -literalpath $latest_undo_file)
         {
             $message = "Are you sure you want to undo your latest renames?`n`n"
             $yesno = [System.Windows.Forms.MessageBox]::Show("$message","!!!WARNING!!!", "YesNo" , "Information" , "Button1")
@@ -816,7 +816,7 @@ Function Idle_Timer
     {
         $status = Receive-Job -Job $script:preview_job
         $preview_box.text = $status
-        if(Test-path $script:output_file)
+        if(Test-Path -literalpath $script:output_file)
         {
             $show_list_button.enabled = $true
             $perform_renames_button.enabled = $true
@@ -1313,8 +1313,8 @@ function processing
                         {
                             if($old_name -eq $new_name)
                             {   #Changing Case Only
-                                Rename-item $old_name -NewName "$new_name-Temp"
-                                Rename-item "$new_name-Temp" -NewName $new_name
+                                Rename-Item -LiteralPath $old_name -NewName "$new_name-Temp"
+                                Rename-Item -LiteralPath "$new_name-Temp" -NewName $new_name
                                 if((Test-Path -LiteralPath "$new_name-Temp"))
                                 {
                                     $status = "Rename Failed Temp Transfer"  
@@ -1322,18 +1322,19 @@ function processing
                                 else
                                 {
                                     $status = "Rename Success"
+
                                 }
                             }
                             else
                             {
-                                Rename-item $old_name -NewName $new_name
+                                Rename-Item -LiteralPath $old_name -NewName $new_name
                                 if((!(Test-Path -LiteralPath $old_name)) -and (Test-Path -LiteralPath $new_name))
                                 {
                                     $status = "Rename Success"
                                 }
                                 else
                                 {
-                                    $status = "Rename Failed"   
+                                    $status = "Rename Failed"  
                                 }
                             }
                         }
@@ -1613,8 +1614,8 @@ function processing
                             
                             if($old_name -eq $new_name)
                             {   #Changing Case Only
-                                Rename-item $old_name -NewName "$new_name-Temp"
-                                Rename-item "$new_name-Temp" -NewName $new_name
+                                Rename-Item -LiteralPath $old_name -NewName "$new_name-Temp"
+                                Rename-Item -LiteralPath "$new_name-Temp" -NewName $new_name
                                 if((Test-Path -LiteralPath "$new_name-Temp"))
                                 {
                                     $status = "Rename Failed Temp Transfer"  
@@ -1626,7 +1627,7 @@ function processing
                             }
                             else
                             {
-                                Rename-item $old_name -NewName $new_name
+                                Rename-Item -LiteralPath $old_name -NewName $new_name
                                 if((!(Test-Path -LiteralPath $old_name)) -and (Test-Path -LiteralPath $new_name))
                                 {
                                     $status = "Rename Success"
@@ -1716,33 +1717,33 @@ function prompt_for_folder()
 ######Initial Checks############################################################
 function initial_checks
 {
-    if(!(test-path -LiteralPath "$dir\Resources"))
+    if(!(Test-Path -LiteralPath "$dir\Resources"))
     {
         New-Item  -ItemType directory -Path "$dir\Resources"
     }
-    if(!(test-path -LiteralPath "$dir\Resources\Required"))
+    if(!(Test-Path -LiteralPath "$dir\Resources\Required"))
     {
         New-Item  -ItemType directory -Path "$dir\Resources\Required"
     }
-    if(!(test-path -LiteralPath "$dir\Resources\Executed Renames"))
+    if(!(Test-Path -LiteralPath "$dir\Resources\Executed Renames"))
     {
         New-Item  -ItemType directory -Path "$dir\Resources\Executed Renames"
     }
-    if(!(test-path -LiteralPath "$dir\Resources\Simulations"))
+    if(!(Test-Path -LiteralPath "$dir\Resources\Simulations"))
     {
         New-Item  -ItemType directory -Path "$dir\Resources\Simulations"
     }
     else
     {
         #Clean Directory
-        Get-ChildItem -Path "$dir\Resources\Simulations" -File | Remove-Item
+        Get-ChildItem -LiteralPath "$dir\Resources\Simulations" -File | Remove-Item
     }
-    if(!(test-path -LiteralPath "$dir\Resources\Undone Renames"))
+    if(!(Test-Path -LiteralPath "$dir\Resources\Undone Renames"))
     {
         New-Item  -ItemType directory -Path "$dir\Resources\Undone Renames"
     }  
     ###################################################################################
-    if(!(test-path -LiteralPath "$dir\Resources\Required\Settings.csv"))
+    if(!(Test-Path -LiteralPath "$dir\Resources\Required\Settings.csv"))
     {
         save_settings
     }
@@ -1957,7 +1958,7 @@ function undo_renames($undo_file)
         #write-host $new_name
         #write-host $old_name
         #write-host
-        if(test-path $old_name)
+        if(Test-Path -LiteralPath $old_name)
         {
             $status = ""
             $count++;
@@ -1965,8 +1966,8 @@ function undo_renames($undo_file)
             if($old_name -eq $new_name)
             {   
                 #Changing Case Only
-                Rename-item $old_name -NewName "$new_name-Temp"
-                Rename-item "$new_name-Temp" -NewName $new_name
+                Rename-Item -LiteralPath $old_name -NewName "$new_name-Temp"
+                Rename-Item -LiteralPath "$new_name-Temp" -NewName $new_name
                 if((Test-Path -LiteralPath "$new_name-Temp"))
                 {
                     $status = "Rename Failed Temp Transfer"
@@ -1978,7 +1979,7 @@ function undo_renames($undo_file)
             }
             else
             {
-                Rename-item $old_name -NewName $new_name
+                Rename-Item -LiteralPath $old_name -NewName $new_name
                 if((!(Test-Path -LiteralPath $old_name)) -and (Test-Path -LiteralPath $new_name))
                 {
                     $status = "Rename Success"
@@ -2007,10 +2008,10 @@ function undo_renames($undo_file)
         $return_block = $return_block + "Showing 30 of $number_of_changes_found Changes Found`r`n`r`n"
     }
     $writer.close()
-    if(Test-path -literalpath $undo_file)
+    if(Test-Path -literalpath $undo_file)
     {
         ###Remove the changes file
-        Remove-Item $undo_file
+        Remove-Item -literalpath $undo_file
     }
     $script:output_file = $undo_output
     $preview_box.text = $return_block
