@@ -1404,7 +1404,7 @@ function processing
                         }
                         else
                         {
-                            $index = $file_name.ToLower().IndexOf($file_name.ToLower())
+                            $index = $file_name.ToLower().IndexOf($must_contain.ToLower())
                         }
                         if($index -eq -1)
                         {
