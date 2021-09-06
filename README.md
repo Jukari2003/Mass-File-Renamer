@@ -18,6 +18,7 @@ Mass File Renamer is a GUI based PowerShell Script.
   - Replace character(s) at the end of a file/folder
   - Delete characters(s) after a certain character(s)
   - Delete character(s) before a certain character(s)
+  - Insert character(s) at a specific position. 
 
 - Easy & Safe to use:
   - You will get a preview of what changes will look like before you accept.
