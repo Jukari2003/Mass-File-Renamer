@@ -5,14 +5,14 @@ Quickly Rename Thousands of Files
 ![alt text](https://github.com/Jukari2003/Mass-File-Renamer/blob/main/MFR%20Preview.png?raw=true)
 
 Install Instructions:
-    - Download Mass-File-Renamer.zip from GitHub
-        - Top Right Hand Corner Click "Code"
-        - Select "Download Zip"
-    - Extract Files to a desired location
-    - Right Click on BB.ps1
-    - Click "Edit"     (This should open up Mass-File-Renamer in Powershell ISE)
-    - Once PowerShell ISE is opened. Click the Green Play Arrow.
-    - Success!
+	- Download Mass-File-Renamer.zip from GitHub
+	- Top Right Hand Corner Click "Code"
+		- Select "Download Zip"
+	- Extract Files to a desired location
+	- Right Click on BB.ps1
+	- Click "Edit"     (This should open up Mass-File-Renamer in Powershell ISE)
+	- Once PowerShell ISE is opened. Click the Green Play Arrow.
+	- Success!
     
 Mass File Renamer is a GUI based PowerShell Script.
 
