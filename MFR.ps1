@@ -18,7 +18,7 @@ $scriptpath = $MyInvocation.MyCommand.Path
 $dir = Split-Path $scriptpath
 Set-Location $dir
 
-$script:version = "1.0"
+$script:version = "1.1"
 $script:program_title = "Mass File Renamer"
 $script:hash = ""
 $script:preview_job = "";
@@ -28,7 +28,6 @@ $script:max_files = 100000000
 $script:output_file = "";
 $script:start_time = Get-Date
 
-$script:target_directory = "C:\users\Jukari\Desktop\Test"
 $script:target_directory = "Browse or Enter a file path"
 $script:drill_down_folders = 0
 $script:include_file_names = 1
@@ -1165,11 +1164,10 @@ function processing
                     ###########Insert at Position: (Folders)
                     if($action -eq "Insert at Position:")
                     {
-                        if($word1 -gt $new_folder.length)
+                        if(!([int]$word1 -gt $new_folder.length))
                         {
-                            $word1 = $new_folder.length
+                            $new_folder = $new_folder.insert($word1,$word2)
                         }
-                        $new_folder = $new_folder.insert($word1,$word2)
                     }
                     ##################################################################################
                     ###########Append Beginning: (Folders)
@@ -1456,14 +1454,14 @@ function processing
                         }
                     }
                     ##################################################################################
-                    ###########Insert at Position: (Folders)
+                    ###########Insert at Position: (Files)
                     if($action -eq "Insert at Position:")
                     {
-                        if($word1 -gt $new_file_name.length)
+                        if(!([int]$word1 -gt $new_file_name.length))
                         {
-                            $word1 = $new_file_name.length
+                            $new_file_name = $new_file_name.insert($word1,$word2)
                         }
-                        $new_file_name = $new_file_name.insert($word1,$word2)
+                        
                     }
                     ##################################################################################
                     ###########Append Beginning: (Files)
@@ -2029,4 +2027,6 @@ main | Out-Null
 
 ##Bug Fixed 22 Aug 2021
 ##Fixed Network Paths
-## 
+##
+##Bug Fixed 26 Dec 2022
+##Fixed Insert at position: error caused user selected position to be un-intentionally manipulated by shorter files/folders 
