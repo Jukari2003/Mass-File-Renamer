@@ -18,7 +18,7 @@ $scriptpath = $MyInvocation.MyCommand.Path
 $dir = Split-Path $scriptpath
 Set-Location $dir
 
-$script:version = "1.1"
+$script:version = "1.3"
 $script:program_title = "Mass File Renamer"
 $script:hash = ""
 $script:preview_job = "";
@@ -466,7 +466,6 @@ function main
     })
     $Form.controls.Add($case_sensitive_checkbox);
 
-
     ##################################################################################
     ###########Must Contain Label
     $y_pos = $y_pos + 30
@@ -528,6 +527,9 @@ function main
     $action_combo.Items.Add("Delete Everything After:") | Out-Null
     $action_combo.Items.Add("Delete Everything Before:") | Out-Null
     $action_combo.Items.Add("Insert at Position:") | Out-Null
+    $action_combo.Items.Add("Replace Non-Latin Characters:") | Out-Null
+    $action_combo.Items.Add("To Lower Case:") | Out-Null
+    $action_combo.Items.Add("To Upper Case:") | Out-Null
     $action_combo.Add_SelectedValueChanged({
         if($this.SelectedItem -eq "Replace Characters:")
         {
@@ -599,7 +601,27 @@ function main
             $word2_label.Visible = $false
             $script:action = "Delete Everything Before:"
         }
-        
+        elseif($this.SelectedItem -eq "Replace Non-Latin Characters:")
+        {
+            $word1_textbox.Visible = $false
+            $word2_textbox.Visible = $true
+            $word2_label.Visible = $true
+            $script:action = "Replace Non-Latin Characters:"
+        }
+        elseif($this.SelectedItem -eq "To Lower Case:")
+        {
+            $word1_textbox.Visible = $false
+            $word2_textbox.Visible = $false
+            $word2_label.Visible = $false
+            $script:action = "To Lower Case:"
+        }
+        elseif($this.SelectedItem -eq "To Upper Case:")
+        {
+            $word1_textbox.Visible = $false
+            $word2_textbox.Visible = $false
+            $word2_label.Visible = $false
+            $script:action = "To Upper Case:"
+        }       
     })
     $action_combo.SelectedItem = $script:action
     $Form.Controls.Add($action_combo)
@@ -1182,6 +1204,24 @@ function processing
                         $new_folder = $new_folder + $word2
                     }
                     ##################################################################################
+                    ###########Replace Non-Latin Characters: (Folders)
+                    if($action -eq "Replace Non-Latin Characters:")
+                    {
+                        $new_folder = $new_folder -creplace '\P{IsBasicLatin}',"$word2"
+                    }
+                    ##################################################################################
+                    ###########To Lower Case: (Folders)
+                    if($action -eq "To Lower Case:")
+                    {
+                        $new_folder = $new_folder.ToLower();
+                    }
+                    ##################################################################################
+                    ###########To Upper Case: (Folders)
+                    if($action -eq "To Upper Case:")
+                    {
+                        $new_folder = $new_folder.ToUpper();
+                    }
+                    ##################################################################################
                     ###########Append After: (Folders)
                     if($action -eq "Append After:")
                     {
@@ -1285,6 +1325,7 @@ function processing
                     {
                         $new_folder = (Get-Culture).TextInfo.ToTitleCase($new_folder)
                     }
+
                     ##################################################################################
                     ###########Finalize Folder Actions
                     $folder_simulation.Add("$sim_path\$folder_name","$sim_path\$new_folder")
@@ -1474,6 +1515,24 @@ function processing
                     if($action -eq "Append End:")
                     {
                         $new_file_name = $new_file_name + $word2
+                    }
+                    ##################################################################################
+                    ###########Replace Non-Latin Characters: (Files)
+                    if($action -eq "Replace Non-Latin Characters:")
+                    {
+                        $new_file_name = $new_file_name -creplace '\P{IsBasicLatin}',"$word2"
+                    }
+                    ##################################################################################
+                    ###########To Lower Case: (Files)
+                    if($action -eq "To Lower Case:")
+                    {
+                        $new_file_name = $new_file_name.ToLower();
+                    }
+                    ##################################################################################
+                    ###########To Upper Case: (Files)
+                    if($action -eq "To Upper Case:")
+                    {
+                        $new_file_name = $new_file_name.ToUpper();
                     }
                     ##################################################################################
                     ###########Append After: (Files)
@@ -2029,4 +2088,10 @@ main | Out-Null
 ##Fixed Network Paths
 ##
 ##Bug Fixed 26 Dec 2022
-##Fixed Insert at position: error caused user selected position to be un-intentionally manipulated by shorter files/folders 
+##Fixed Insert at position: error caused user selected position to be un-intentionally manipulated by shorter files/folders
+##
+##Enhancement 16 Jan 2023
+##Added a non-latin character removal
+##
+##Enhancement 29 Jan 2023
+##Added a to Upper Case / To Lower Case 
