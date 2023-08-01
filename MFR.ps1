@@ -18,7 +18,7 @@ $scriptpath = $MyInvocation.MyCommand.Path
 $dir = Split-Path $scriptpath
 Set-Location $dir
 
-$script:version = "1.3"
+$script:version = "1.5"
 $script:program_title = "Mass File Renamer"
 $script:hash = ""
 $script:preview_job = "";
@@ -55,10 +55,12 @@ function main
     $Form = New-Object System.Windows.Forms.Form
     $Form.Location = "200, 200"
     $Form.Font = "Copperplate Gothic,8.1"
-    $Form.FormBorderStyle = "FixedDialog"
+    $Form.FormBorderStyle = "Sizable"
+    $Form.MinimumSize = "1000,800"
     $Form.ForeColor = "Black"
     $Form.BackColor = "#434343"
     $Form.Text = "  $script:program_title"
+    $Form.AutoScaleMode = "Font"
     $Form.Width = 1000 #1245
     $Form.Height = 800
 
@@ -68,6 +70,7 @@ function main
     $y_pos = 15
     $title1            = New-Object System.Windows.Forms.Label   
     $title1.Font       = New-Object System.Drawing.Font("Copperplate Gothic Bold",21,[System.Drawing.FontStyle]::Regular)
+    $title1.anchor = "Top"
     $title1.Text       = $script:program_title
     $title1.TextAlign  = "MiddleCenter"
     $title1.Width      = $Form.Width
@@ -81,6 +84,7 @@ function main
     $y_pos = $y_pos + 30
     $title2            = New-Object System.Windows.Forms.Label
     $title2.Font       = New-Object System.Drawing.Font("Copperplate Gothic",7.5,[System.Drawing.FontStyle]::Regular)
+    $title2.anchor = "Top"
     $title2.Text       = "Written by: Anthony Brechtel`nVer $script:version"
     $title2.TextAlign  = "MiddleCenter"
     $title2.ForeColor  = "darkgray"
@@ -94,6 +98,7 @@ function main
     $y_pos = $y_pos + 45
     $root_directory_label = New-Object System.Windows.Forms.Label
     $root_directory_label.Location = New-Object System.Drawing.Point(15, $y_pos)
+    $root_directory_label.anchor = "Top"
     $root_directory_label.Size = "250, 23"
     $root_directory_label.ForeColor = "White" 
     $root_directory_label.Text = "Root Directory:"
@@ -106,6 +111,7 @@ function main
     $target_box = New-Object System.Windows.Forms.TextBox
     $target_box.Location = New-Object System.Drawing.Point(($root_directory_label.location.x + $root_directory_label.width + 3),($y_pos))
     $target_box.font = New-Object System.Drawing.Font("Arial",11,[System.Drawing.FontStyle]::Regular)
+    $target_box.anchor = "Top"
     $target_box.width = 385
     $target_box.Height = 40
     $target_box.Text = $script:target_directory
@@ -168,6 +174,7 @@ function main
     $browse_button.Location= New-Object System.Drawing.Size(($target_box.location.x + $target_box.width + 3),($y_pos + 1))
     $browse_button.BackColor = "#606060"
     $browse_button.ForeColor = "White"
+    $browse_button.anchor = "Top"
     $browse_button.Width=70
     $browse_button.Height=22
     $browse_button.Text='Browse'
@@ -188,6 +195,7 @@ function main
     $y_pos = $y_pos + 30
     $drill_down_folders_label = New-Object System.Windows.Forms.Label
     $drill_down_folders_label.Location = New-Object System.Drawing.Point(15, $y_pos)
+    $drill_down_folders_label.anchor = "Top"
     $drill_down_folders_label.Size = "250, 23"
     $drill_down_folders_label.ForeColor = "White" 
     $drill_down_folders_label.Text = "Drill Into Folders:"
@@ -198,6 +206,7 @@ function main
     ##################################################################################
     ###########Drill Down Into Folders Checkbox
     $drill_down_folders_checkbox = new-object System.Windows.Forms.checkbox
+    $drill_down_folders_checkbox.anchor = "Top"
     $drill_down_folders_checkbox.Location = new-object System.Drawing.Size(($drill_down_folders_label.location.x + $drill_down_folders_label.width + 3),$y_pos);
     $drill_down_folders_checkbox.Size = new-object System.Drawing.Size(100,30)  
     $drill_down_folders_checkbox.name = $script:drill_down_folders           
@@ -235,6 +244,7 @@ function main
     $y_pos = $y_pos + 30
     $include_file_names_label = New-Object System.Windows.Forms.Label
     $include_file_names_label.Location = New-Object System.Drawing.Point(15, $y_pos)
+    $include_file_names_label.anchor = "Top"
     $include_file_names_label.Size = "250, 23"
     $include_file_names_label.ForeColor = "White" 
     $include_file_names_label.Text = "Include File Names:"
@@ -245,6 +255,7 @@ function main
     ##################################################################################
     ###########Include File Names Checkbox Label
     $include_file_names_checkbox = new-object System.Windows.Forms.checkbox
+    $include_file_names_checkbox.anchor = "Top"
     $include_file_names_checkbox.Location = new-object System.Drawing.Size(($include_file_names_label.location.x + $include_file_names_label.width + 3),$y_pos);
     $include_file_names_checkbox.Size = new-object System.Drawing.Size(100,30)  
     $include_file_names_checkbox.name = $script:include_file_names           
@@ -281,6 +292,7 @@ function main
     ###########Include Folder Names Label
     $y_pos = $y_pos + 30
     $include_folder_names_label = New-Object System.Windows.Forms.Label
+    $include_folder_names_label.anchor = "Top"
     $include_folder_names_label.Location = New-Object System.Drawing.Point(15, $y_pos)
     $include_folder_names_label.Size = "250, 23"
     $include_folder_names_label.ForeColor = "White" 
@@ -292,6 +304,7 @@ function main
     ##################################################################################
     ###########Include Folder Names Checkbox
     $include_folder_names_checkbox = new-object System.Windows.Forms.checkbox
+    $include_folder_names_checkbox.anchor = "Top"
     $include_folder_names_checkbox.Location = new-object System.Drawing.Size(($include_folder_names_label.location.x + $include_folder_names_label.width + 3),$y_pos);
     $include_folder_names_checkbox.Size = new-object System.Drawing.Size(100,30)  
     $include_folder_names_checkbox.name = $script:include_folder_names          
@@ -328,6 +341,7 @@ function main
     ###########Include Extentions Label
     $y_pos = $y_pos + 30
     $include_extenstions_label = New-Object System.Windows.Forms.Label
+    $include_extenstions_label.anchor = "Top"
     $include_extenstions_label.Location = New-Object System.Drawing.Point(15, $y_pos)
     $include_extenstions_label.Size = "250, 23"
     $include_extenstions_label.ForeColor = "White" 
@@ -339,6 +353,7 @@ function main
     ##################################################################################
     ###########Include Extentions Checkbox
     $include_extenstions_checkbox = new-object System.Windows.Forms.checkbox
+    $include_extenstions_checkbox.anchor = "Top"
     $include_extenstions_checkbox.Location = new-object System.Drawing.Size(($include_extenstions_label.location.x + $include_extenstions_label.width + 3),$y_pos);
     $include_extenstions_checkbox.Size = new-object System.Drawing.Size(100,30)  
     $include_extenstions_checkbox.name = $script:include_extensions      
@@ -376,7 +391,9 @@ function main
     ###########Format Titles Automatically Label
     $y_pos = $y_pos + 30
     $Format_titles_automatically_label = New-Object System.Windows.Forms.Label
+    $Format_titles_automatically_label.anchor = "Top"
     $Format_titles_automatically_label.Location = New-Object System.Drawing.Point(15, $y_pos)
+    $Format_titles_automatically_label.anchor = "Top"
     $Format_titles_automatically_label.Size = "250, 23"
     $Format_titles_automatically_label.ForeColor = "White" 
     $Format_titles_automatically_label.Text = "Format Titles Automatically:"
@@ -387,6 +404,7 @@ function main
     ##################################################################################
     ###########Format Titles Automatically Checkbox
     $format_titles_automatically_checkbox = new-object System.Windows.Forms.checkbox
+    $format_titles_automatically_checkbox.anchor = "Top"
     $format_titles_automatically_checkbox.Location = new-object System.Drawing.Size(($Format_titles_automatically_label.location.x + $Format_titles_automatically_label.width + 3),$y_pos);
     $format_titles_automatically_checkbox.Size = new-object System.Drawing.Size(100,30)  
     $format_titles_automatically_checkbox.name = $script:format_titles_automatically        
@@ -423,6 +441,7 @@ function main
     ###########Case Sensitive Label
     $y_pos = $y_pos + 30
     $case_sensitive_label = New-Object System.Windows.Forms.Label
+    $case_sensitive_label.anchor = "Top"
     $case_sensitive_label.Location = New-Object System.Drawing.Point(15, $y_pos)
     $case_sensitive_label.Size = "250, 23"
     $case_sensitive_label.ForeColor = "White" 
@@ -434,6 +453,7 @@ function main
     ##################################################################################
     ###########Case Sensitive Checkbox
     $case_sensitive_checkbox = new-object System.Windows.Forms.checkbox
+    $case_sensitive_checkbox.anchor = "Top"
     $case_sensitive_checkbox.Location = new-object System.Drawing.Size(($case_sensitive_label.location.x + $case_sensitive_label.width + 3),$y_pos);
     $case_sensitive_checkbox.Size = new-object System.Drawing.Size(100,30)  
     $case_sensitive_checkbox.name = $script:case_sensitive       
@@ -470,6 +490,7 @@ function main
     ###########Must Contain Label
     $y_pos = $y_pos + 30
     $must_contain_label = New-Object System.Windows.Forms.Label
+    $must_contain_label.anchor = "Top"
     $must_contain_label.Location = New-Object System.Drawing.Point(15, $y_pos)
     $must_contain_label.Size = "250, 23"
     $must_contain_label.ForeColor = "White" 
@@ -480,12 +501,13 @@ function main
 
     ##################################################################################
     ###########Must Contain TextBox
-    $must_contain_textbox = New-Object System.Windows.Forms.TextBox
-    $must_contain_textbox.Location = New-Object System.Drawing.Point(($must_contain_label.location.x + $must_contain_label.width + 3),($y_pos))
-    $must_contain_textbox.width = 250
-    $must_contain_textbox.Height = 40
-    $must_contain_textbox.Text = $script:must_contain
-    $must_contain_textbox.font = New-Object System.Drawing.Font("Arial",11,[System.Drawing.FontStyle]::Regular)
+    $must_contain_textbox           = New-Object System.Windows.Forms.TextBox
+    $must_contain_textbox.anchor = "Top"
+    $must_contain_textbox.Location  = New-Object System.Drawing.Point(($must_contain_label.location.x + $must_contain_label.width + 3),($y_pos))
+    $must_contain_textbox.width     = 250
+    $must_contain_textbox.Height    = 40
+    $must_contain_textbox.Text      = $script:must_contain
+    $must_contain_textbox.font      = New-Object System.Drawing.Font("Arial",11,[System.Drawing.FontStyle]::Regular)
     $must_contain_textbox.Add_TextChanged({
         $script:must_contain = $this.text
         
@@ -495,7 +517,9 @@ function main
     ##################################################################################
     ###########Action Label
     $y_pos = $y_pos + 30
+    
     $action_label           = New-Object System.Windows.Forms.Label
+    $action_label.anchor = "Top"
     $action_label.Location  = New-Object System.Drawing.Point(15, $y_pos)
     $action_label.Size      = "250, 23"
     $action_label.ForeColor = "White" 
@@ -509,10 +533,10 @@ function main
     $word1_textbox                  = New-Object System.Windows.Forms.TextBox
     $word2_textbox                  = New-Object System.Windows.Forms.TextBox
     $word2_label                    = New-Object System.Windows.Forms.Label
-    $action_combo                   = New-Object System.Windows.Forms.ComboBox	
+    $action_combo                   = New-Object System.Windows.Forms.ComboBox
+    $action_combo.anchor = "Top"	
     $action_combo.width = 250
     $action_combo.autosize = $false
-    $action_combo.Anchor = 'top,right'
     $action_combo.font = New-Object System.Drawing.Font("Arial",11,[System.Drawing.FontStyle]::Regular)
     $action_combo.Location = New-Object System.Drawing.Point(($action_label.location.x + $action_label.width + 3),($y_pos))
     $action_combo.DropDownStyle = "DropDownList"
@@ -629,6 +653,7 @@ function main
     ##################################################################################
     ###########Word 1 TextBox
     $word1_textbox.Location = New-Object System.Drawing.Point(($action_combo.location.x + $action_combo.width + 3),($y_pos -1))
+    $word1_textbox.anchor = "Top"	
     $word1_textbox.width = 200
     $word1_textbox.Height = 40
     $word1_textbox.Text = $script:word1
@@ -643,6 +668,7 @@ function main
     ###########Word 2 Label
     $y_pos = $y_pos + 30
     $word2_label.Location = New-Object System.Drawing.Point(15, $y_pos)
+    $word2_label.anchor = "Top"
     $word2_label.Size = "250, 23"
     $word2_label.ForeColor = "White" 
     $word2_label.Text = "With Characters:"
@@ -653,6 +679,7 @@ function main
     ##################################################################################
     ###########Word 2 TextBox
     $word2_textbox.Location = New-Object System.Drawing.Point(($word2_label.location.x + $word2_label.width + 3),($y_pos))
+    $word2_textbox.anchor = "Top"
     $word2_textbox.width = 250
     $word2_textbox.Height = 40
     $word2_textbox.Text = $script:word2
@@ -667,7 +694,8 @@ function main
     ##################################################################################
     ###########Preview Label
     $y_pos = $y_pos + 50;
-    $preview_label            = New-Object System.Windows.Forms.Label   
+    $preview_label            = New-Object System.Windows.Forms.Label
+    $preview_label.anchor = "Top"
     $preview_label.Font       = New-Object System.Drawing.Font("Copperplate Gothic Bold",15,[System.Drawing.FontStyle]::Regular)
     $preview_label.Text       = "Preview"
     $preview_label.TextAlign  = "MiddleCenter"
@@ -681,10 +709,10 @@ function main
     ###########Separator
     $y_pos = $y_pos + 35;
     $separator_bar                             = New-Object system.Windows.Forms.Label
+    $separator_bar.anchor = "Top"
     $separator_bar.text                        = ""
     $separator_bar.AutoSize                    = $false
     $separator_bar.BorderStyle                 = "fixed3d"
-    $separator_bar.Anchor                      = 'top,left'
     $separator_bar.width                       = ($Form.width - 50)
     $separator_bar.height                      = 1
     $separator_bar.location                    = New-Object System.Drawing.Point((($Form.width / 2) - ($separator_bar.width / 2)),$y_pos)
@@ -695,9 +723,11 @@ function main
     ###########Preview Box
     $y_pos = $y_pos + 10;
     $preview_box                                = New-Object system.Windows.Forms.TextBox 
+    $preview_box.anchor = "Top"
     $preview_box.Font                           = New-Object System.Drawing.Font("Arial",12,[System.Drawing.FontStyle]::Regular)
     $preview_box.Size                           = New-Object System.Drawing.Size(($Form.width - 50),250)
-    $preview_box.Location                       = New-Object System.Drawing.Size((($Form.width / 2) - ($preview_box.width / 2)),$y_pos)    
+    $preview_box.Location                       = New-Object System.Drawing.Size((($Form.width / 2) - ($preview_box.width / 2)),$y_pos)
+    $preview_box.AutoSize                       = $true
     $preview_box.ReadOnly                       = $true
     $preview_box.WordWrap                       = $False
     $preview_box.Multiline                      = $True
@@ -709,6 +739,7 @@ function main
     ###########Perform Rename Button
     $y_pos = $y_pos + 255;
     $perform_renames_button = New-Object System.Windows.Forms.Button
+    $perform_renames_button.anchor = "Top"
     $perform_renames_button.Width=150
     $perform_renames_button.Height=30  
     $perform_renames_button.Location= New-Object System.Drawing.Size((($Form.width / 3) - ($perform_renames_button.width / 2)),$y_pos)  
@@ -741,6 +772,7 @@ function main
     ##################################################################################
     ###########Show List Button
     $show_list_button = New-Object System.Windows.Forms.Button
+    $show_list_button.anchor = "Top"
     $show_list_button.Width=150
     $show_list_button.Height=30  
     $show_list_button.Location= New-Object System.Drawing.Size((($Form.width / 3) + $perform_renames_button.Width - ($show_list_button.width / 2)),$y_pos)  
@@ -759,6 +791,7 @@ function main
     ##################################################################################
     ###########Show List Button
     $undo_renames_button = New-Object System.Windows.Forms.Button
+    $undo_renames_button.anchor = "Top"
     $undo_renames_button.Width=150
     $undo_renames_button.Height=30  
     $undo_renames_button.Location= New-Object System.Drawing.Size((($Form.width / 3) + $perform_renames_button.Width + $show_list_button.Width - ($undo_renames_button.width / 2)),$y_pos)  
@@ -1324,6 +1357,27 @@ function processing
                     if($format_titles_automatically -eq 1)
                     {
                         $new_folder = (Get-Culture).TextInfo.ToTitleCase($new_folder)
+                        $title_lower_case_words = (“and”,“as”,“but”,“for”,“if”,“nor”,“or”,“so”,“yet”,“a”,“an”,“the”,“as”,“at”,“by”,“for”,“in”,“of”,“off”,“on”,“per”,“to”,“up”,“via”,"aka","is","it")
+                        
+                        foreach($twl in $title_lower_case_words)
+                        {
+                            $twu = $twl.substring(0,1).toupper()+$twl.substring(1).tolower()
+
+                            $new_folder = $new_folder -replace "\s$twu "," $twl "
+                            $new_folder = $new_folder -replace "-\s$twl ", "- $twu "
+                            $new_folder = $new_folder -replace "-$twl ", "-$twu "
+                            $new_folder = $new_folder -replace " $twl -", " $twu -"
+                            $new_folder = $new_folder -replace " $twl-", " $twu-"
+                        }
+                        $new_folder = $new_folder -replace ' Viii\b',' VIII'
+                        $new_folder = $new_folder -replace ' Vii\b',' VII'
+                        $new_folder = $new_folder -replace ' Iii\b',' III'
+                        $new_folder = $new_folder -replace ' Vi\b',' VI'
+                        $new_folder = $new_folder -replace ' Iv+\b',' IV'
+                        $new_folder = $new_folder -replace ' Ix+\b',' IX'
+                        $new_folder = $new_folder -replace ' Ii\b',' II'
+                        $new_folder = $new_folder -replace '\bvip\b','VIP'
+                        $new_folder = $new_folder -replace '\btv\b','TV'
                     }
 
                     ##################################################################################
@@ -1343,6 +1397,15 @@ function processing
                     ##Fix Network Paths
                     if($old_name -match "^\\"){$old_name = "\$old_name"}
                     if($new_name -match "^\\"){$new_name = "\$new_name"}
+
+                    if($old_name -match "^((?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\")
+                    {
+                        $old_name = "\\" + $old_name 
+                    }
+                    if($new_name -match "^((?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\")
+                    {
+                        $new_name = "\\" + $new_name 
+                    }
 
                     if($old_name -cne $new_name)
                     {
@@ -1637,18 +1700,32 @@ function processing
                     if($format_titles_automatically -eq 1)
                     {
                         $new_file_name = (Get-Culture).TextInfo.ToTitleCase($new_file_name)
+                        $title_lower_case_words = (“and”,“as”,“but”,“for”,“if”,“nor”,“or”,“so”,“yet”,“a”,“an”,“the”,“as”,“at”,“by”,“for”,“in”,“of”,“off”,“on”,“per”,“to”,“up”,“via”,"aka","is","it")
+                        
+                        foreach($twl in $title_lower_case_words)
+                        {
+                            $twu = $twl.substring(0,1).toupper()+$twl.substring(1).tolower()
+
+                            $new_file_name = $new_file_name -replace "\s$twu "," $twl "
+                            $new_file_name = $new_file_name -replace "-\s$twl ", "- $twu "
+                            $new_file_name = $new_file_name -replace "-$twl ", "-$twu "
+                            $new_file_name = $new_file_name -replace " $twl -", " $twu -"
+                            $new_file_name = $new_file_name -replace " $twl-", " $twu-"
+                        }
+                        $new_file_name = $new_file_name -replace ' Viii\b',' VIII'
+                        $new_file_name = $new_file_name -replace ' Vii\b',' VII'
+                        $new_file_name = $new_file_name -replace ' Iii\b',' III'
+                        $new_file_name = $new_file_name -replace ' Vi\b',' VI'
+                        $new_file_name = $new_file_name -replace ' Iv+\b',' IV'
+                        $new_file_name = $new_file_name -replace ' Ix+\b',' IX'
+                        $new_file_name = $new_file_name -replace ' Ii\b',' II'
+                        $new_file_name = $new_file_name -replace '\bvip\b','VIP'
+                        $new_file_name = $new_file_name -replace '\btv\b','TV'
                     }
                     ##################################################################################
                     ###########Finalize Folder Actions
-                    #write-host ON $sim_path\$file_name$extension 
-                    #write-host NN $sim_path\$new_file_name$extension
-                    #write-host
-
                     $old_name = "$sim_path\$file_name$extension"
                     $new_name = "$sim_path\$new_file_name$extension"
-
-
-
 
                     $old_name = $old_name -replace '\\\\','\'
                     $new_name = $new_name -replace '\\\\','\'
@@ -1657,7 +1734,17 @@ function processing
                     if($old_name -match "^\\"){$old_name = "\$old_name"}
                     if($new_name -match "^\\"){$new_name = "\$new_name"}
 
+                    if($old_name -match "^((?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\")
+                    {
+                        $old_name = "\\" + $old_name 
+                    }
+                    if($new_name -match "^((?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\")
+                    {
+                        $new_name = "\\" + $new_name 
+                    }
 
+                    #write-host ON $old_name
+                    #write-host NN $new_name
 
                     if($old_name -cne $new_name)
                     {
@@ -2094,4 +2181,14 @@ main | Out-Null
 ##Added a non-latin character removal
 ##
 ##Enhancement 29 Jan 2023
-##Added a to Upper Case / To Lower Case 
+##Added a to Upper Case / To Lower Case
+##
+##Bug Fixed 24 Feb 2023
+##Fixed Issue with Network Paths
+##
+##Enhancement 24 Feb 2023
+##Improved ToTitleCase formating (Not perfect, but better)
+##
+##Enhancement 18 Mar 2023
+##Improved Screen Resizing
+##
