@@ -11,7 +11,7 @@ Install Instructions:<br />
 &emsp;&emsp;&emsp;&emsp;&emsp;- Top Right Hand Corner Click "Code"<br />
 &emsp;&emsp;&emsp;&emsp;&emsp;- Select "Download Zip"<br />
 &emsp;&emsp;&emsp;- Extract Files to a desired location<br />
-&emsp;&emsp;&emsp;- Right Click on BB.ps1<br />
+&emsp;&emsp;&emsp;- Right Click on MFR.ps1<br />
 &emsp;&emsp;&emsp;- Click "Edit"     (This should open up Mass-File-Renamer in Powershell ISE)<br />
 &emsp;&emsp;&emsp;- Once PowerShell ISE is opened. Click the Green Play Arrow.<br />
 &emsp;&emsp;&emsp;- Success!<br />
@@ -37,6 +37,7 @@ Mass File Renamer is a GUI based PowerShell Script.
   - Remove Non-Latin Character(s) (Scrubs Unicode Chars)
   - To Lower Case 
   - To Upper Case
+  - Add spaces between CamelCase file names
 
 - Easy & Safe to use:
   - You will get a preview of what changes will look like before you accept.

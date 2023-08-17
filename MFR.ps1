@@ -18,7 +18,7 @@ $scriptpath = $MyInvocation.MyCommand.Path
 $dir = Split-Path $scriptpath
 Set-Location $dir
 
-$script:version = "1.5"
+$script:version = "1.6"
 $script:program_title = "Mass File Renamer"
 $script:hash = ""
 $script:preview_job = "";
@@ -554,6 +554,7 @@ function main
     $action_combo.Items.Add("Replace Non-Latin Characters:") | Out-Null
     $action_combo.Items.Add("To Lower Case:") | Out-Null
     $action_combo.Items.Add("To Upper Case:") | Out-Null
+    $action_combo.Items.Add("AddSpaceBetweenCamelCase:") | Out-Null
     $action_combo.Add_SelectedValueChanged({
         if($this.SelectedItem -eq "Replace Characters:")
         {
@@ -645,7 +646,14 @@ function main
             $word2_textbox.Visible = $false
             $word2_label.Visible = $false
             $script:action = "To Upper Case:"
-        }       
+        }
+        elseif($this.SelectedItem -eq "AddSpaceBetweenCamelCase:")
+        {
+            $word1_textbox.Visible = $false
+            $word2_textbox.Visible = $false
+            $word2_label.Visible = $false
+            $script:action = "AddSpaceBetweenCamelCase:"
+        }        
     })
     $action_combo.SelectedItem = $script:action
     $Form.Controls.Add($action_combo)
@@ -1255,6 +1263,12 @@ function processing
                         $new_folder = $new_folder.ToUpper();
                     }
                     ##################################################################################
+                    ###########AddSpaceBetweenCaseWords
+                    if($action -eq "AddSpaceBetweenCamelCase:")
+                    {
+                        $new_folder = $new_folder | ForEach-Object { $_ -csplit '(?<=[a-z])(?=[A-Z0-9])' -ne '' -join ' ' }
+                    }
+                    ##################################################################################
                     ###########Append After: (Folders)
                     if($action -eq "Append After:")
                     {
@@ -1596,6 +1610,12 @@ function processing
                     if($action -eq "To Upper Case:")
                     {
                         $new_file_name = $new_file_name.ToUpper();
+                    }
+                    ##################################################################################
+                    ###########AddSpaceBetweenCaseWords
+                    if($action -eq "AddSpaceBetweenCamelCase:")
+                    {
+                        $new_file_name = $new_file_name | ForEach-Object { $_ -csplit '(?<=[a-z])(?=[A-Z0-9])' -ne '' -join ' ' }
                     }
                     ##################################################################################
                     ###########Append After: (Files)
@@ -2191,4 +2211,7 @@ main | Out-Null
 ##
 ##Enhancement 18 Mar 2023
 ##Improved Screen Resizing
+##
+##Enhancement 17 Aug 2023
+##Added AddSpaceBetweenCamelCase capability to break apart CamelCase file names (e.g. CamelCase to Camel Case)
 ##
