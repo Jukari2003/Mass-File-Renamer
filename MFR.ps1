@@ -18,7 +18,7 @@ $scriptpath = $MyInvocation.MyCommand.Path
 $dir = Split-Path $scriptpath
 Set-Location $dir
 
-$script:version = "1.6"
+$script:version = "1.7"
 $script:program_title = "Mass File Renamer"
 $script:hash = ""
 $script:preview_job = "";
@@ -53,6 +53,10 @@ function main
     ##################################################################################
     ###########Main Form
     $Form = New-Object System.Windows.Forms.Form
+    $preview_box            = New-Object system.Windows.Forms.TextBox
+    $perform_renames_button = New-Object System.Windows.Forms.Button
+    $undo_renames_button    = New-Object System.Windows.Forms.Button
+    $show_list_button = New-Object System.Windows.Forms.Button
     $Form.Location = "200, 200"
     $Form.Font = "Copperplate Gothic,8.1"
     $Form.FormBorderStyle = "Sizable"
@@ -63,6 +67,13 @@ function main
     $Form.AutoScaleMode = "Font"
     $Form.Width = 1000 #1245
     $Form.Height = 800
+    $Form.Add_Resize({
+        $preview_box.width = ($Form.width - 50)
+        $preview_box.height = $form.height - 550
+        $perform_renames_button.Location= New-Object System.Drawing.Size((($Form.width / 2) - (($perform_renames_button.width + $undo_renames_button.width + $show_list_button.width) / 2)),($form.height - 90))
+        $show_list_button.Location= New-Object System.Drawing.Size(($perform_renames_button.Location.x + $perform_renames_button.width + 5),($form.height - 90))
+        $undo_renames_button.Location= New-Object System.Drawing.Size(($show_list_button.Location.x + $undo_renames_button.width + 5),($form.height - 90))
+    });
 
     
     ##################################################################################
@@ -79,6 +90,7 @@ function main
     $title1.Location   = New-Object System.Drawing.Size((($Form.width / 2) - ($Form.width / 2)),$y_pos)
     $Form.Controls.Add($title1)
 
+
     ##################################################################################
     ###########Title Written By
     $y_pos = $y_pos + 30
@@ -93,6 +105,7 @@ function main
     $title2.Location   = New-Object System.Drawing.Size((($Form.width / 2) - ($Form.width / 2)),$y_pos)
     $Form.Controls.Add($title2)
 
+
     ##################################################################################
     ###########Root Directory Label
     $y_pos = $y_pos + 45
@@ -105,6 +118,7 @@ function main
     $root_directory_label.TextAlign = "MiddleRight"
     $root_directory_label.Font = [Drawing.Font]::New("Times New Roman", 12)
     $Form.Controls.Add($root_directory_label)
+
 
     ##################################################################################
     ###########Target Box
@@ -168,6 +182,7 @@ function main
     })
     $Form.Controls.Add($target_box)
 
+
     ##################################################################################
     ###########Browse Button   
     $browse_button = New-Object System.Windows.Forms.Button
@@ -190,6 +205,7 @@ function main
     })
     $Form.Controls.Add($browse_button)
     
+
     ##################################################################################
     ###########Drill Down Into Folders Label
     $y_pos = $y_pos + 30
@@ -202,6 +218,7 @@ function main
     $drill_down_folders_label.TextAlign = "MiddleRight"
     $drill_down_folders_label.Font = [Drawing.Font]::New("Times New Roman", 12)
     $Form.Controls.Add($drill_down_folders_label)
+
 
     ##################################################################################
     ###########Drill Down Into Folders Checkbox
@@ -239,6 +256,7 @@ function main
     })
     $Form.controls.Add($drill_down_folders_checkbox);
 
+
     ##################################################################################
     ###########Include File Names Checkbox Label
     $y_pos = $y_pos + 30
@@ -251,6 +269,7 @@ function main
     $include_file_names_label.TextAlign = "MiddleRight"
     $include_file_names_label.Font = [Drawing.Font]::New("Times New Roman", 12)
     $Form.Controls.Add($include_file_names_label)
+
 
     ##################################################################################
     ###########Include File Names Checkbox Label
@@ -288,6 +307,7 @@ function main
     })
     $Form.controls.Add($include_file_names_checkbox);
 
+
     ##################################################################################
     ###########Include Folder Names Label
     $y_pos = $y_pos + 30
@@ -300,6 +320,7 @@ function main
     $include_folder_names_label.TextAlign = "MiddleRight"
     $include_folder_names_label.Font = [Drawing.Font]::New("Times New Roman", 12)
     $Form.Controls.Add($include_folder_names_label)
+
 
     ##################################################################################
     ###########Include Folder Names Checkbox
@@ -337,6 +358,7 @@ function main
     })
     $Form.controls.Add($include_folder_names_checkbox);
 
+
     ##################################################################################
     ###########Include Extentions Label
     $y_pos = $y_pos + 30
@@ -349,6 +371,7 @@ function main
     $include_extenstions_label.TextAlign = "MiddleRight"
     $include_extenstions_label.Font = [Drawing.Font]::New("Times New Roman", 12)
     $Form.Controls.Add($include_extenstions_label)
+
 
     ##################################################################################
     ###########Include Extentions Checkbox
@@ -387,6 +410,7 @@ function main
     })
     $Form.controls.Add($include_extenstions_checkbox);
 
+
     ##################################################################################
     ###########Format Titles Automatically Label
     $y_pos = $y_pos + 30
@@ -400,6 +424,7 @@ function main
     $Format_titles_automatically_label.TextAlign = "MiddleRight"
     $Format_titles_automatically_label.Font = [Drawing.Font]::New("Times New Roman", 12)
     $Form.Controls.Add($Format_titles_automatically_label)
+
 
     ##################################################################################
     ###########Format Titles Automatically Checkbox
@@ -437,6 +462,7 @@ function main
     })
     $Form.controls.Add($format_titles_automatically_checkbox);
 
+
     ##################################################################################
     ###########Case Sensitive Label
     $y_pos = $y_pos + 30
@@ -449,6 +475,7 @@ function main
     $case_sensitive_label.TextAlign = "MiddleRight"
     $case_sensitive_label.Font = [Drawing.Font]::New("Times New Roman", 12)
     $Form.Controls.Add($case_sensitive_label)
+
 
     ##################################################################################
     ###########Case Sensitive Checkbox
@@ -486,6 +513,7 @@ function main
     })
     $Form.controls.Add($case_sensitive_checkbox);
 
+
     ##################################################################################
     ###########Must Contain Label
     $y_pos = $y_pos + 30
@@ -498,6 +526,7 @@ function main
     $must_contain_label.TextAlign = "MiddleRight"
     $must_contain_label.Font = [Drawing.Font]::New("Times New Roman", 12)
     $Form.Controls.Add($must_contain_label)
+
 
     ##################################################################################
     ###########Must Contain TextBox
@@ -514,10 +543,10 @@ function main
     })
     $Form.Controls.Add($must_contain_textbox)
 
+
     ##################################################################################
     ###########Action Label
     $y_pos = $y_pos + 30
-    
     $action_label           = New-Object System.Windows.Forms.Label
     $action_label.anchor = "Top"
     $action_label.Location  = New-Object System.Drawing.Point(15, $y_pos)
@@ -527,6 +556,7 @@ function main
     $action_label.TextAlign = "MiddleRight"
     $action_label.Font      = [Drawing.Font]::New("Times New Roman", 12)
     $Form.Controls.Add($action_label)
+
 
     ##################################################################################
     ###########Action Combo
@@ -658,6 +688,7 @@ function main
     $action_combo.SelectedItem = $script:action
     $Form.Controls.Add($action_combo)
 
+
     ##################################################################################
     ###########Word 1 TextBox
     $word1_textbox.Location = New-Object System.Drawing.Point(($action_combo.location.x + $action_combo.width + 3),($y_pos -1))
@@ -672,6 +703,7 @@ function main
     })
     $Form.Controls.Add($word1_textbox)
 
+
     ##################################################################################
     ###########Word 2 Label
     $y_pos = $y_pos + 30
@@ -683,6 +715,7 @@ function main
     $word2_label.TextAlign = "MiddleRight"
     $word2_label.Font = [Drawing.Font]::New("Times New Roman", 12)
     $Form.Controls.Add($word2_label)
+
 
     ##################################################################################
     ###########Word 2 TextBox
@@ -713,6 +746,7 @@ function main
     $preview_label.Location   = New-Object System.Drawing.Size((($Form.width / 2) - ($Form.width / 2)),$y_pos)
     $Form.Controls.Add($preview_label)
 
+
     ##################################################################################
     ###########Separator
     $y_pos = $y_pos + 35;
@@ -727,13 +761,13 @@ function main
     $separator_bar.TextAlign                   = 'MiddleCenter'
     $Form.controls.Add($separator_bar);
 
+
     ##################################################################################
     ###########Preview Box
     $y_pos = $y_pos + 10;
-    $preview_box                                = New-Object system.Windows.Forms.TextBox 
-    $preview_box.anchor = "Top"
     $preview_box.Font                           = New-Object System.Drawing.Font("Arial",12,[System.Drawing.FontStyle]::Regular)
-    $preview_box.Size                           = New-Object System.Drawing.Size(($Form.width - 50),250)
+    $preview_box.width = ($Form.width - 50)
+    $preview_box.height = $form.height - 550
     $preview_box.Location                       = New-Object System.Drawing.Size((($Form.width / 2) - ($preview_box.width / 2)),$y_pos)
     $preview_box.AutoSize                       = $true
     $preview_box.ReadOnly                       = $true
@@ -743,14 +777,12 @@ function main
     $preview_box.ScrollBars                     = "vertical"
     $Form.Controls.Add($preview_box)
 
+
     ##################################################################################
     ###########Perform Rename Button
-    $y_pos = $y_pos + 255;
-    $perform_renames_button = New-Object System.Windows.Forms.Button
-    $perform_renames_button.anchor = "Top"
     $perform_renames_button.Width=150
-    $perform_renames_button.Height=30  
-    $perform_renames_button.Location= New-Object System.Drawing.Size((($Form.width / 3) - ($perform_renames_button.width / 2)),$y_pos)  
+    $perform_renames_button.Height=30
+    $perform_renames_button.Location= New-Object System.Drawing.Size((($Form.width / 2) - ((150 + 150 + 150) / 2)),($form.height - 90))
     $perform_renames_button.BackColor = "#606060"
     $perform_renames_button.ForeColor = "White"
     $perform_renames_button.TextAlign                   = 'MiddleCenter'
@@ -777,13 +809,12 @@ function main
     })
     $form.Controls.Add($perform_renames_button)
 
+
     ##################################################################################
     ###########Show List Button
-    $show_list_button = New-Object System.Windows.Forms.Button
-    $show_list_button.anchor = "Top"
     $show_list_button.Width=150
     $show_list_button.Height=30  
-    $show_list_button.Location= New-Object System.Drawing.Size((($Form.width / 3) + $perform_renames_button.Width - ($show_list_button.width / 2)),$y_pos)  
+    $show_list_button.Location= New-Object System.Drawing.Size(($perform_renames_button.Location.x + $perform_renames_button.width + 5),($form.height - 90))  
     $show_list_button.BackColor = "#606060"
     $show_list_button.ForeColor = "White"
     $show_list_button.TextAlign                   = 'MiddleCenter'
@@ -796,13 +827,12 @@ function main
     })
     $form.Controls.Add($show_list_button)
 
+
     ##################################################################################
     ###########Show List Button
-    $undo_renames_button = New-Object System.Windows.Forms.Button
-    $undo_renames_button.anchor = "Top"
     $undo_renames_button.Width=150
-    $undo_renames_button.Height=30  
-    $undo_renames_button.Location= New-Object System.Drawing.Size((($Form.width / 3) + $perform_renames_button.Width + $show_list_button.Width - ($undo_renames_button.width / 2)),$y_pos)  
+    $undo_renames_button.Height=30
+    $undo_renames_button.Location= New-Object System.Drawing.Size(($show_list_button.Location.x + $undo_renames_button.width + 5),($form.height - 90))
     $undo_renames_button.BackColor = "#606060"
     $undo_renames_button.ForeColor = "White"
     $undo_renames_button.TextAlign                   = 'MiddleCenter'
@@ -841,7 +871,10 @@ function main
     $form.Controls.Add($undo_renames_button)
 
 
+    ##################################################################################
+    ###########Show Form
     $Form.ShowDialog()
+
 }
 ################################################################################
 ######Idle Timer################################################################
@@ -2214,4 +2247,7 @@ main | Out-Null
 ##
 ##Enhancement 17 Aug 2023
 ##Added AddSpaceBetweenCamelCase capability to break apart CamelCase file names (e.g. CamelCase to Camel Case)
+##
+##Enhancement 14 Sept 2023
+##Improved Form resize visibility of preview box
 ##
