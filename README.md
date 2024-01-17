@@ -2,7 +2,7 @@
 Quickly Rename Thousands of Files 
 
 
-![alt text](https://github.com/Jukari2003/Mass-File-Renamer/blob/main/MFR%20Preview.png?raw=true)
+![alt text](https://github.com/Jukari2003/Mass-File-Renamer/blob/main/MFR%20Preview1.png?raw=true)
 
 
 
