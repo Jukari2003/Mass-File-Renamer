@@ -18,7 +18,7 @@ $scriptpath = $MyInvocation.MyCommand.Path
 $dir = Split-Path $scriptpath
 Set-Location $dir
 
-$script:version = "1.7"
+$script:version = "1.8"
 $script:program_title = "Mass File Renamer"
 $script:hash = ""
 $script:preview_job = "";
@@ -584,8 +584,11 @@ function main
     $action_combo.Items.Add("Replace Non-Latin Characters:") | Out-Null
     $action_combo.Items.Add("To Lower Case:") | Out-Null
     $action_combo.Items.Add("To Upper Case:") | Out-Null
+    $action_combo.Items.Add("Increment Number:") | Out-Null
+    $action_combo.Items.Add("Pad Numbers With:") | Out-Null
     $action_combo.Items.Add("AddSpaceBetweenCamelCase:") | Out-Null
     $action_combo.Add_SelectedValueChanged({
+        $word2_label.text = "With Characters:"
         if($this.SelectedItem -eq "Replace Characters:")
         {
             $word1_textbox.Visible = $true
@@ -677,6 +680,22 @@ function main
             $word2_label.Visible = $false
             $script:action = "To Upper Case:"
         }
+        elseif($this.SelectedItem -eq "Increment Number:")
+        {
+            $word1_textbox.Visible = $false
+            $word2_textbox.Visible = $true
+            $word2_label.text = "By:"
+            $word2_label.Visible = $true
+            $script:action = "Increment Number:"
+        }
+        elseif($this.SelectedItem -eq "Pad Numbers With:")
+        {
+            $word1_textbox.Visible = $true
+            $word2_textbox.Visible = $true
+            $word2_label.text = "By:"
+            $word2_label.Visible = $true
+            $script:action = "Pad Numbers With:"
+        } 
         elseif($this.SelectedItem -eq "AddSpaceBetweenCamelCase:")
         {
             $word1_textbox.Visible = $false
@@ -1158,6 +1177,27 @@ function processing
                     $go = 0;
                 }
             }
+            elseif($action -eq "Increment Number:")
+            {
+                if(!($word2 -match "^-?\d+$") )
+                {
+                    $return_block = $return_block + "Action Error: Parameter 1 must contain a number`r`n"
+                    $go = 0;
+                }
+            }
+            elseif($action -eq "Pad Numbers With:")
+            {
+                if($word1.Length -ne 1)
+                {
+                    $return_block = $return_block + "Action Error: Parameter 1 must be one character long`r`n"
+                    $go = 0;
+                }
+                if(!($word2 -match "^\d+$") )
+                {
+                    $return_block = $return_block + "Action Error: Parameter 2 must contain a number`r`n"
+                    $go = 0;
+                }  
+            }
         }
 
         
@@ -1294,6 +1334,39 @@ function processing
                     if($action -eq "To Upper Case:")
                     {
                         $new_folder = $new_folder.ToUpper();
+                    }
+                    ##################################################################################
+                    ###########Increment Number: (Folders)
+                    if($action -eq "Increment Number:")
+                    {
+                        if($new_folder -match '\d+') 
+                        {
+                            [int]$old_number = $matches[0]
+                            [int]$new_number = 0;
+                            if(!($word2 -match "-"))
+                            {
+                                [int]$new_number = $old_number + [int]($word2)
+                            }
+                            else
+                            {
+                                $word2 = $word2 -replace "-",""
+                                [int]$new_number = $old_number - [int]($word2)
+                            }
+                            [regex]$pattern = "$old_number"
+                            $new_folder = $pattern.Replace($new_folder,$new_number,1)
+                        }
+                    }
+                    ##################################################################################
+                    ###########Pad Numbers With: (Folders)
+                    if($action -eq "Pad Numbers With:")
+                    {
+                        if($new_folder -match '\d+') 
+                        {
+                            [string]$old_number = $matches[0]
+                            [string]$new_number = ($old_number).PadLeft([int]$word2,"$word1")
+                            [regex]$pattern = "$old_number"
+                            $new_folder = $pattern.Replace($new_folder,$new_number,1)
+                        }
                     }
                     ##################################################################################
                     ###########AddSpaceBetweenCaseWords
@@ -1643,6 +1716,39 @@ function processing
                     if($action -eq "To Upper Case:")
                     {
                         $new_file_name = $new_file_name.ToUpper();
+                    }
+                    ##################################################################################
+                    ###########Increment Number: (Files)
+                    if($action -eq "Increment Number:")
+                    {
+                        if($new_file_name -match '\d+') 
+                        {
+                            [int]$old_number = $matches[0]
+                            [int]$new_number = 0;
+                            if(!($word2 -match "-"))
+                            {
+                                [int]$new_number = $old_number + [int]($word2)
+                            }
+                            else
+                            {
+                                $word2 = $word2 -replace "-",""
+                                [int]$new_number = $old_number - [int]($word2)
+                            }
+                            [regex]$pattern = "$old_number"
+                            $new_file_name = $pattern.Replace($new_file_name,$new_number,1)
+                        }
+                    }
+                    ##################################################################################
+                    ###########Pad Numbers With: (Files)
+                    if($action -eq "Pad Numbers With:")
+                    {
+                        if($new_file_name -match '\d+') 
+                        {
+                            [string]$old_number = $matches[0]
+                            [string]$new_number = ($old_number).PadLeft([int]$word2,"$word1")
+                            [regex]$pattern = "$old_number"
+                            $new_file_name = $pattern.Replace($new_file_name,$new_number,1)
+                        }
                     }
                     ##################################################################################
                     ###########AddSpaceBetweenCaseWords
@@ -2250,4 +2356,8 @@ main | Out-Null
 ##
 ##Enhancement 14 Sept 2023
 ##Improved Form resize visibility of preview box
+##
+##Enhancement 8 Dec 2024
+##Added Increment Of First Number in string capability
+##Added Pad first number in string capability
 ##

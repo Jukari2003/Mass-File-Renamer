@@ -34,6 +34,8 @@ Mass File Renamer is a GUI based PowerShell Script.
   - Delete characters(s) after a certain character(s)
   - Delete character(s) before a certain character(s)
   - Insert character(s) at a specific position.
+  - Increment Numbers
+  - Pad Numbers
   - Remove Non-Latin Character(s) (Scrubs Unicode Chars)
   - To Lower Case 
   - To Upper Case
