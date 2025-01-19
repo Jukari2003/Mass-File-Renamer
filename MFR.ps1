@@ -18,7 +18,7 @@ $scriptpath = $MyInvocation.MyCommand.Path
 $dir = Split-Path $scriptpath
 Set-Location $dir
 
-$script:version = "1.8"
+$script:version = "1.9"
 $script:program_title = "Mass File Renamer"
 $script:hash = ""
 $script:preview_job = "";
@@ -580,6 +580,7 @@ function main
     $action_combo.Items.Add("Replace End Characters:") | Out-Null 
     $action_combo.Items.Add("Delete Everything After:") | Out-Null
     $action_combo.Items.Add("Delete Everything Before:") | Out-Null
+    $action_combo.Items.Add("Delete Between Characters:") | Out-Null
     $action_combo.Items.Add("Insert at Position:") | Out-Null
     $action_combo.Items.Add("Replace Non-Latin Characters:") | Out-Null
     $action_combo.Items.Add("To Lower Case:") | Out-Null
@@ -651,6 +652,13 @@ function main
             $word2_textbox.Visible = $false
             $word2_label.Visible = $false
             $script:action = "Delete Everything After:"
+        }
+        elseif($this.SelectedItem -eq "Delete Between Characters:")
+        {
+            $word1_textbox.Visible = $true
+            $word2_textbox.Visible = $true
+            $word2_label.Visible = $false
+            $script:action = "Delete Between Characters:"
         }
         elseif($this.SelectedItem -eq "Delete Everything Before:")
         {
@@ -1177,6 +1185,19 @@ function processing
                     $go = 0;
                 }
             }
+            elseif($action -eq "Delete Between Characters:")
+            {
+                if($word1 -eq "")
+                {
+                    $return_block = $return_block + "Action Error: Missing Start Character(s)`r`n"
+                    $go = 0;
+                }
+                if($word2 -eq "")
+                {
+                    $return_block = $return_block + "Action Error: Missing Stop Character(s)`r`n"
+                    $go = 0;
+                }
+            }
             elseif($action -eq "Increment Number:")
             {
                 if(!($word2 -match "^-?\d+$") )
@@ -1470,6 +1491,43 @@ function processing
                         if($index -ne -1)
                         {
                             $new_folder = $new_folder.Substring($index,($new_folder.Length - $index))
+                        }
+                    }
+                    ##################################################################################
+                    ###########Delete Between Characters: (Folders)
+                    if($action -eq "Delete Between Characters:")
+                    {
+                        $go = 1
+                        $startIndex = 0
+                        $stopIndex = 0;
+                        if($case_sensitive -eq 1)
+                        {
+                            $startIndex = $new_folder.IndexOf($word1, [StringComparison]::Ordinal)
+                            if ($startIndex -eq -1) {
+                                $go = 0;
+                            }
+                            $stopIndex = $new_folder.IndexOf($word2, ($startIndex + 1), [StringComparison]::Ordinal)
+                            if ($stopIndex -eq -1) {
+                                $go = 0;
+                            }
+                            $stopIndex += $word2.Length
+                        }
+                        else
+                        {
+                            
+                            $startIndex = $new_folder.IndexOf($word1, [StringComparison]::OrdinalIgnoreCase)
+                            if ($startIndex -eq -1) {
+                                $go = 0;
+                            }
+                            $stopIndex = $new_folder.IndexOf($word2, ($startIndex + 1), [StringComparison]::OrdinalIgnoreCase)
+                            if ($stopIndex -eq -1) {
+                                $go = 0;
+                            }
+                            $stopIndex += $word2.Length
+                        }
+                        if($go -eq 1)
+                        {
+                            $new_folder = $new_folder.Substring(0, $startIndex) + $new_folder.Substring($stopIndex)
                         }
                     }
                     ##################################################################################
@@ -1852,6 +1910,42 @@ function processing
                         if($index -ne -1)
                         {
                             $new_file_name = $new_file_name.Substring($index,($new_file_name.Length - $index))
+                        }
+                    }
+                    ##################################################################################
+                    ###########Delete Between Characters: (Files)
+                    if($action -eq "Delete Between Characters:")
+                    {
+                        $go = 1
+                        $startIndex = 0
+                        $stopIndex = 0;
+                        if($case_sensitive -eq 1)
+                        {
+                            $startIndex = $new_file_name.IndexOf($word1, [StringComparison]::Ordinal)
+                            if ($startIndex -eq -1) {
+                                $go = 0;
+                            }
+                            $stopIndex = $new_file_name.IndexOf($word2, ($startIndex + 1), [StringComparison]::Ordinal)
+                            if ($stopIndex -eq -1) {
+                                $go = 0;
+                            }
+                            $stopIndex += $word2.Length
+                        }
+                        else
+                        {
+                            $startIndex = $new_file_name.IndexOf($word1, [StringComparison]::OrdinalIgnoreCase)
+                            if ($startIndex -eq -1) {
+                                $go = 0;
+                            }
+                            $stopIndex = $new_file_name.IndexOf($word2, ($startIndex + 1), [StringComparison]::OrdinalIgnoreCase)
+                            if ($stopIndex -eq -1) {
+                                $go = 0;
+                            }
+                            $stopIndex += $word2.Length
+                        }
+                        if($go -eq 1)
+                        {
+                            $new_file_name = $new_file_name.Substring(0, $startIndex) + $new_file_name.Substring($stopIndex)
                         }
                     }
                     ##################################################################################
@@ -2360,4 +2454,7 @@ main | Out-Null
 ##Enhancement 8 Dec 2024
 ##Added Increment Of First Number in string capability
 ##Added Pad first number in string capability
+##
+##Enhancement 19 Jan 2025
+##Added Delete Between Characters capability
 ##
